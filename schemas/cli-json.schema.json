@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ctxctl.xuepoo.xyz/schemas/cli-json.schema.json",
+  "title": "CtxCtl CLI JSON Envelope",
+  "description": "Machine contract for ctxctl --json output (cli-contract.md §3). Every response is a stable JSON envelope; error responses use {\"error\":{...}}.",
+  "type": "object",
+  "required": ["schema_version", "tool"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "description": "Envelope schema version; currently 1.",
+      "const": 1
+    },
+    "tool": {
+      "type": "string",
+      "enum": ["outline", "symbol", "read", "deps", "exec"]
+    },
+    "path": {
+      "type": "string",
+      "description": "Absolute path of the target file (absent for exec)."
+    },
+    "language": {
+      "type": "string",
+      "description": "Detected source language (absent for exec)."
+    },
+    "saved": {
+      "type": "object",
+      "description": "Token-efficiency metrics.",
+      "required": ["percent", "tokens_after", "tokens_before"],
+      "properties": {
+        "percent": {
+          "type": "integer",
+          "description": "Saved percentage (0-100)."
+        },
+        "tokens_after": {
+          "type": "integer",
+          "description": "Estimated output tokens."
+        },
+        "tokens_before": {
+          "type": "integer",
+          "description": "Estimated full-input tokens."
+        }
+      }
+    },
+    "symbols": {
+      "type": "array",
+      "description": "outline: symbol table entries.",
+      "items": {
+        "type": "object",
+        "required": ["name", "kind", "start_line", "end_line", "signature"],
+        "properties": {
+          "name": { "type": "string" },
+          "kind": { "type": "string" },
+          "start_line": { "type": "integer" },
+          "end_line": { "type": "integer" },
+          "signature": { "type": "string" },
+          "doc_comment": { "type": "string" }
+        }
+      }
+    },
+    "symbol": {
+      "type": "object",
+      "description": "symbol: the located symbol metadata.",
+      "properties": {
+        "name": { "type": "string" },
+        "kind": { "type": "string" },
+        "start_line": { "type": "integer" },
+        "end_line": { "type": "integer" },
+        "signature": { "type": "string" }
+      }
+    },
+    "slice": {
+      "type": "string",
+      "description": "symbol: original source slice or compacted body."
+    },
+    "lines": {
+      "type": "string",
+      "description": "read: the requested line ranges (echoed)."
+    },
+    "content": {
+      "type": "string",
+      "description": "read: concatenated raw lines."
+    },
+    "imports": {
+      "type": "array",
+      "description": "deps: classified import edges.",
+      "items": {
+        "type": "object",
+        "required": ["target", "kind", "line"],
+        "properties": {
+          "target": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": ["local", "external", "ignored"]
+          },
+          "line": { "type": "integer" }
+        }
+      }
+    },
+    "cmd": {
+      "type": "string",
+      "description": "exec: the command that was run."
+    },
+    "exit_code": {
+      "type": "integer",
+      "description": "exec: child process exit code."
+    },
+    "compressed": {
+      "type": "string",
+      "description": "exec: compressed output."
+    },
+    "error": {
+      "type": "object",
+      "description": "Error envelope (substitutes all other fields).",
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Contract exit code (1 io, 2 usage, 3 unsupported, 4 not found)."
+        },
+        "message": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "rules/code-reading",
+  "version": "1.0.0",
+  "description": "Code reading discipline: outline → symbol → read → deps workflow enforced with ctxctl",
+  "author": "CtxCtl",
+  "license": "MIT",
+  "carryctx": {
+    "engine": ">=0.2.0"
+  },
+  "rules": [
+    {
+      "source": "presets/rules/code-reading.md",
+      "target": "rules/code-reading.md",
+      "kind": "rule"
+    }
+  ],
+  "permissions": {
+    "requires_filesystem": true,
+    "requires_network": false,
+    "requires_env": []
+  }
+}

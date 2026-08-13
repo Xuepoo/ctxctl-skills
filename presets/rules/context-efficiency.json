@@ -1,0 +1,22 @@
+{
+  "name": "rules/context-efficiency",
+  "version": "1.0.0",
+  "description": "Core ctxctl rules: minimal source reads, compressed command output, byte-stable context",
+  "author": "CtxCtl",
+  "license": "MIT",
+  "carryctx": {
+    "engine": ">=0.2.0"
+  },
+  "rules": [
+    {
+      "source": "presets/rules/context-efficiency.md",
+      "target": "rules/context-efficiency.md",
+      "kind": "rule"
+    }
+  ],
+  "permissions": {
+    "requires_filesystem": true,
+    "requires_network": false,
+    "requires_env": []
+  }
+}

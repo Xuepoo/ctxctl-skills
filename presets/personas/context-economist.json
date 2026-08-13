@@ -1,0 +1,18 @@
+{
+  "name": "personas/context-economist",
+  "version": "1.0.0",
+  "description": "Context-economy persona: minimal source reads, compressed output, byte-stable discipline via ctxctl",
+  "author": "CtxCtl",
+  "license": "MIT",
+  "carryctx": {
+    "engine": ">=0.2.0"
+  },
+  "profiles": {
+    "personas/context-economist.md": "Token-economy reviewer persona"
+  },
+  "permissions": {
+    "requires_filesystem": true,
+    "requires_network": false,
+    "requires_env": []
+  }
+}

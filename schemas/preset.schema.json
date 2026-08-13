@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ctxctl.xuepoo.xyz/schemas/preset.schema.json",
+  "title": "CtxCtl Preset Manifest",
+  "description": "Schema for CtxCtl Capability Packs (Presets) following a package.json style. Compatible with the CarryCtx preset engine.",
+  "type": "object",
+  "required": ["name", "version", "description", "carryctx", "permissions"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The unique name of the preset, typically lowercase with hyphens (e.g., rules/context-efficiency).",
+      "pattern": "^[a-z0-9-_/]+$"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semver version of the preset (e.g., 1.0.0).",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "A short, readable description of the preset's purpose."
+    },
+    "author": {
+      "type": "string",
+      "description": "The author or organization publishing the preset."
+    },
+    "license": {
+      "type": "string",
+      "description": "The license of the preset (e.g., MIT)."
+    },
+    "carryctx": {
+      "type": "object",
+      "description": "Engine requirements for the consuming preset engine.",
+      "required": ["engine"],
+      "properties": {
+        "engine": {
+          "type": "string",
+          "description": "Semver range for the supported carryctx-cli version (e.g., >=0.2.0)."
+        }
+      }
+    },
+    "profiles": {
+      "type": "object",
+      "description": "Agent capability profiles dictating review standards and output structures.",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Relative path to the profile markdown file (e.g., personas/context-economist.md)."
+      }
+    },
+    "rules": {
+      "type": "array",
+      "description": "List of relative paths to absolute project constraints and rules.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Path to the rules markdown file within the preset package."
+          },
+          "target": {
+            "type": "string",
+            "description": "Destination path in the project's .carryctx/ directory."
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["rule"]
+          }
+        },
+        "required": ["source", "target", "kind"]
+      }
+    },
+    "workflows": {
+      "type": "object",
+      "description": "Standard Operating Procedures mapping intent to workflow files.",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Relative path to the workflow Markdown file."
+      }
+    },
+    "activation": {
+      "type": "object",
+      "description": "Conditions for automatically recommending or activating this preset.",
+      "properties": {
+        "filePatterns": {
+          "type": "array",
+          "description": "Glob patterns indicating relevant project types (e.g., Cargo.toml).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "intents": {
+          "type": "array",
+          "description": "Task intents that should trigger this preset (e.g., implement, review).",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "description": "Crucial supply-chain security constraints defining what this preset is allowed to do.",
+      "properties": {
+        "requires_filesystem": {
+          "type": "boolean",
+          "description": "Whether the preset needs filesystem access."
+        },
+        "requires_network": {
+          "type": "boolean",
+          "description": "Whether the preset needs network access."
+        },
+        "requires_env": {
+          "type": "array",
+          "description": "Environment variables required by the preset.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
