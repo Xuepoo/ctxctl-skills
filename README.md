@@ -11,21 +11,49 @@ the preset library (personas, rules, workflows), and the JSON schemas.
 
 ## Installation
 
+### Via the `skills` CLI
+
+List available skills:
+
+```bash
+npx skills add Xuepoo/ctxctl-skills --list
+```
+
+Install the core skill for all detected agents:
+
+```bash
+npx skills add Xuepoo/ctxctl-skills --all
+```
+
+Install for specific agents:
+
+```bash
+npx skills add Xuepoo/ctxctl-skills \
+  --skill ctxctl-core \
+  --agent codex \
+  --agent claude-code \
+  --agent cursor \
+  --agent github-copilot
+```
+
+Use a skill once without installing it:
+
+```bash
+npx skills use Xuepoo/ctxctl-skills --skill ctxctl-core
+```
+
+The Skills CLI supports GitHub shorthand (`owner/repo`), full GitHub URLs,
+direct skill paths, local paths, and agent-specific installs. See the upstream
+CLI README for current options and supported agents:
+<https://github.com/vercel-labs/skills>.
+
 ### From the workspace (agent working copies)
 
 Agents load skills from the workspace `.agents/skills/` directory. Mirror the
 working copies here:
 
 ```bash
-cp -r skills/ctxctl-core /mnt/data/Workspace/Projects/ctxctl/.agents/skills/
-```
-
-### Via the `skills` CLI (any agent)
-
-Once the repo has a public remote:
-
-```bash
-npx skills add https://github.com/Xuepoo/ctxctl-skills --skill ctxctl-core -y
+cp -r skills/ctxctl-core .agents/skills/
 ```
 
 ### Presets
