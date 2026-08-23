@@ -32,6 +32,7 @@ you must adhere to the following absolute constraints:
 
 ## 4. Prefer the Contract
 
-- Command semantics are fixed by `cli-contract.md` (§4-§11) in `ctxctl-docs`.
+- Command semantics are fixed by `cli-contract.md` (§4-§11) at
+  <https://github.com/Xuepoo/ctxctl/blob/main/docs/cli-contract.md>.
 - If observed CLI behavior deviates from the contract, report it — do not
   work around it.

@@ -1,8 +1,8 @@
 # ctxctl Command Reference
 
-Byte-exact reference for the `ctxctl` CLI (v0.1.0). Semantics are fixed by
-`cli-contract.md` in the `ctxctl-docs` repository; this file is the
-agent-facing quick reference.
+Byte-exact reference for the `ctxctl` CLI (v0.3.0). Semantics are fixed by
+[`cli-contract.md`](https://github.com/Xuepoo/ctxctl/blob/main/docs/cli-contract.md);
+this file is the agent-facing quick reference.
 
 ## Global Options
 
@@ -13,6 +13,13 @@ agent-facing quick reference.
 | `--json`                | Alias for `--format=json`                                 |
 | `--no-color`            | Accepted for contract compliance; output is already plain |
 | `--no-saved`            | Suppress `saved%` metrics                                 |
+| `--output <PATH>`       | Write the full payload to a file instead of stdout        |
+
+Supported languages (14 tree-sitter backends): rust, typescript
+(.ts/.tsx/.mts/.cts), javascript (.js/.jsx/.mjs/.cjs), python, go, java, c,
+cpp, csharp, ruby, lua, html (.html/.htm), css (.css/.scss), markdown
+(.md/.markdown). Unsupported extensions fall back to raw reads (`read`
+always works).
 
 ## `ctxctl outline <FILE>`
 
@@ -51,6 +58,11 @@ def add(a: int, b: int) -> int:
 - `--signature`: signature lines only, no body.
 - `--lines N-M`: 1-based sub-range within the symbol; exactly one range.
 - `--compact` conflicts with `--signature` and `--lines`.
+- `--kind <KIND>` disambiguates same-name symbols. Values: class, struct,
+  enum, interface, function, method, module, const, var, trait, type,
+  heading, rule, element (aliases: head, rule, elem). Markup backends emit:
+  Markdown headings (an ATX/setext heading's slice spans its whole section),
+  CSS/SCSS rules, HTML elements that carry an `id`.
 - Exit 4 with a JSON error envelope when the symbol is not found.
 
 ## `ctxctl read <FILE> --lines N-M[,N-M...]`
@@ -104,10 +116,24 @@ custom_keep_pattern: test
   `error|warning|failed|panic|fatal`, case-insensitive, rg syntax), plus
   `head` (5) and `tail` (5) summary lines; quiet middle runs collapse to
   `... [N lines omitted]`.
+- Diagnostic _location_ lines (`^\s+-->`, rustc/cargo style) are implicit
+  keeps — they survive next to any kept error header.
+- If a fold saves ≤10% the output carries a deterministic warning suggesting
+  a `--keep` review (text: trailing warning line; JSON: top-level `warning`).
 - Outputs ≤ `collapse_threshold` (20) lines pass through uncompressed.
 - stderr merges into stdout; the child's exit code is preserved.
+- `<cmd>` is split with shell-word quoting and spawned directly — **no
+  shell**. Pipes/redirections/compound commands need an explicit shell:
+  `ctxctl exec "sh -c 'make 2>&1 | tail -50'"`.
 - `--keep <PATTERN>` appends a keep regex; `--head`/`--tail` override the
   configured summaries.
+
+## `ctxctl mcp`
+
+Optional stdio MCP adapter (newline-delimited JSON-RPC 2.0). Exposes the
+five commands above as tools `ctxctl_outline`, `ctxctl_symbol`,
+`ctxctl_read`, `ctxctl_deps`, `ctxctl_exec` for MCP-native agents. The CLI
+remains canonical.
 
 ## JSON Envelope
 

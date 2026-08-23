@@ -1,7 +1,8 @@
 # CtxCtl Agent Skills
 
 Agent skills collection for [CtxCtl](https://github.com/Xuepoo/ctxctl) — a
-pure-CLI, zero-MCP, stateless context layer for AI coding agents. CtxCtl lets
+CLI-first, stateless context layer (optional `ctxctl mcp` adapter) for AI
+coding agents. CtxCtl lets
 an agent read only the part of a file it needs (tree-sitter AST symbol
 location → original source slice) and compress command output — instead of
 dumping whole files into context.
@@ -74,7 +75,7 @@ requirements, permissions).
 
 - `ctxctl` CLI installed (`cargo install ctxctl` or pre-built binary).
 - Source languages you read must be supported: rust, typescript, python, go,
-  javascript, java, c, cpp, csharp, ruby, lua.
+  javascript, java, c, cpp, csharp, ruby, lua, html, css/scss, markdown.
 
 ## Available Skills
 
@@ -118,8 +119,9 @@ ctxctl-skills/
 
 ## Contract
 
-The CLI behavior these skills teach is fixed by `cli-contract.md` in the
-`ctxctl-docs` repository. Observed deviation is a bug — report it.
+The CLI behavior these skills teach is fixed by
+[`cli-contract.md`](https://github.com/Xuepoo/ctxctl/blob/main/docs/cli-contract.md).
+Observed deviation is a bug — report it.
 
 ## License
 

@@ -2,7 +2,7 @@
 
 This repository contains the CtxCtl Agent Skill and preset distribution —
 documentation, references, scripts, and workflow presets that help coding
-agents use CtxCtl (the pure-CLI, zero-MCP, stateless context layer) effectively.
+agents use CtxCtl (the CLI-first, stateless context layer with an optional MCP adapter) effectively.
 
 This repo mirrors the structure of `carryctx-skills`: it is the standalone
 distribution for the `ctxctl-*` skills and the `presets` (personas, rules,

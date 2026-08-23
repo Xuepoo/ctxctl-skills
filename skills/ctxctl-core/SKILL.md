@@ -9,7 +9,8 @@ metadata:
 
 # CtxCtl Core Skill
 
-CtxCtl is a pure-CLI, zero-MCP, stateless context layer that makes coding
+CtxCtl is a CLI-first, stateless context layer (optional `ctxctl mcp`
+adapter) that makes coding
 agents token-efficient. Instead of dumping whole files or whole command
 outputs into context, an agent reads only the part it needs:
 
@@ -113,4 +114,5 @@ the exact tokens it already saw. Rules:
 4. **Compress heavy commands**: wrap long-running or verbose commands in
    `ctxctl exec` and keep the error signal.
 5. **Verify against the contract**: command semantics are fixed by
-   `cli-contract.md` in `ctxctl-docs`; behavior that deviates is a bug.
+   [`cli-contract.md`](https://github.com/Xuepoo/ctxctl/blob/main/docs/cli-contract.md);
+   behavior that deviates is a bug.
