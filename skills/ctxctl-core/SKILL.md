@@ -1,6 +1,6 @@
 ---
 name: ctxctl-core
-description: Core CtxCtl capability. Pure CLI, zero MCP, stateless context layer for AI coding agents. Teaches token-efficient code reading — outline, symbol (signature/compact/lines), read, deps — and command-output compression via exec, with byte-stable output that hits provider prompt caching. Use when reading source files, locating symbol definitions or bodies, slicing file ranges, understanding import/dependency graphs, or running commands whose full output is too large for context. Never read whole files into context when a symbol slice or outline suffices.
+description: Core CtxCtl capability. CLI-first, stateless context layer for AI coding agents (optional ctxctl mcp adapter). Teaches token-efficient code reading — outline, symbol (signature/compact/lines/kind), read, deps — and command-output compression via exec, with byte-stable output that hits provider prompt caching. Use when reading source files, locating symbol definitions or bodies, slicing file ranges, understanding import/dependency graphs, or running commands whose full output is too large for context. Never read whole files into context when a symbol slice or outline suffices.
 license: MIT
 metadata:
   author: CtxCtl
