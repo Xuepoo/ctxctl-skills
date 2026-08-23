@@ -2,10 +2,26 @@
 
 Agent skills collection for [CtxCtl](https://github.com/Xuepoo/ctxctl) — a
 CLI-first, stateless context layer (optional `ctxctl mcp` adapter) for AI
-coding agents. CtxCtl lets
-an agent read only the part of a file it needs (tree-sitter AST symbol
-location → original source slice) and compress command output — instead of
-dumping whole files into context.
+coding agents. CtxCtl lets an agent read only the part of a file it needs
+(tree-sitter AST symbol location → original source slice) and compress
+command output — instead of dumping whole files into context.
+
+## Measured impact
+
+From a scripted-agent benchmark (pi driving deepseek-v4-flash via OpenRouter,
+four real tasks: three source files of 51–96 KB plus a 1,914-line build log;
+single run per arm):
+
+| Measurement                                                    | Result              |
+| -------------------------------------------------------------- | ------------------- |
+| Native `ctxctl mcp` tools vs built-in read/bash — session cost | **−33%**            |
+| Same benchmark — uncached (fully billed) input tokens          | −31%                |
+| Log-analysis task via `ctxctl exec`                            | **−84% cost**       |
+| Exploring a 96 KB file through outline/symbol slices           | −86% uncached input |
+| File outlines vs whole-file reads                              | 91–95% smaller      |
+
+Savings scale inversely with provider prefix-caching quality; exec output
+compression is the least conditional win (~80%+ across models).
 
 This repository is the standalone distribution for the `ctxctl-*` skills,
 the preset library (personas, rules, workflows), and the JSON schemas.
