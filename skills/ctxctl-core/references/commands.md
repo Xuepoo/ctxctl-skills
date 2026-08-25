@@ -1,6 +1,6 @@
 # ctxctl Command Reference
 
-Byte-exact reference for the `ctxctl` CLI (v0.3.0). Semantics are fixed by
+Byte-exact reference for the `ctxctl` CLI (v0.3.3). Semantics are fixed by
 [`cli-contract.md`](https://github.com/Xuepoo/ctxctl/blob/main/docs/cli-contract.md);
 this file is the agent-facing quick reference.
 
@@ -95,6 +95,9 @@ $ ctxctl deps deps.rs
 - `local` — relative/crate-relative, same-repo modules.
 - `external` — bare imports resolved as third-party (probed against the
   filesystem, honoring `[paths] ignore`).
+- `unresolved` — could not be resolved to a local file or a known external
+  (e.g. a same-directory namesake in a degenerate root with no `.git`
+  ancestor); surfaced explicitly instead of being guessed.
 - `ignored` — targets matching `[paths] ignore` globs (default
   `node_modules`, `target`, `dist`, `.git`).
 
@@ -123,8 +126,13 @@ custom_keep_pattern: test
 - Outputs ≤ `collapse_threshold` (20) lines pass through uncompressed.
 - stderr merges into stdout; the child's exit code is preserved.
 - `<cmd>` is split with shell-word quoting and spawned directly — **no
-  shell**. Pipes/redirections/compound commands need an explicit shell:
+  shell**. Unquoted shell metacharacters (`|`, `>`, `;`, ...) are a hard
+  error before spawn, with an explicit `sh -c` hint:
+  `exec runs a single command, not a shell; found unquoted '|' — wrap
+compound commands as sh -c "<command>"`. Compound form:
   `ctxctl exec "sh -c 'make 2>&1 | tail -50'"`.
+- Empty or whitespace-only `--keep` patterns are rejected (they would match
+  every line); options are validated before the child spawns.
 - `--keep <PATTERN>` appends a keep regex; `--head`/`--tail` override the
   configured summaries.
 
@@ -133,7 +141,24 @@ custom_keep_pattern: test
 Optional stdio MCP adapter (newline-delimited JSON-RPC 2.0). Exposes the
 five commands above as tools `ctxctl_outline`, `ctxctl_symbol`,
 `ctxctl_read`, `ctxctl_deps`, `ctxctl_exec` for MCP-native agents. The CLI
-remains canonical.
+remains canonical; handlers are shared, so output is byte-identical.
+
+- **Workspace root pinned**: the launch directory is the root. Relative
+  paths resolve against it; absolute paths under it are accepted; anything
+  escaping it fails with `path escapes workspace root`.
+- **`ctxctl_read` `lines` is optional** — omitted or empty returns the whole
+  file (the CLI still requires `--lines`).
+- **Argument coercion**: numeric arguments coerce to their decimal string
+  form (`"lines": 100` works like `"100"`).
+- **Teaching errors**: an unknown tool name enumerates the available tools;
+  a missing required argument appends a usage hint; an unknown argument key
+  lists the valid keys.
+- **Self-healing symbol misses**: a not-found `ctxctl_symbol` call returns
+  up to five ranked suggestions (prefix, substring, edit distance ≤ 2;
+  case-insensitive) plus an embedded mini-outline of top-level symbols, so
+  one retry usually lands.
+- Tool failures surface as `isError` results; a non-zero `ctxctl_exec` exit
+  code is prefixed into the result text and mirrored in the error.
 
 ## JSON Envelope
 
