@@ -4,7 +4,7 @@ description: Core CtxCtl capability. CLI-first, stateless context layer for AI c
 license: MIT
 metadata:
   author: CtxCtl
-  version: "0.1.0"
+  version: "0.3.3"
 ---
 
 # CtxCtl Core Skill
@@ -39,7 +39,8 @@ Use CtxCtl commands when:
 - **Reading arbitrary ranges**: `ctxctl read <file> --lines 100-150,200-210`
   reads raw lines with no AST overhead.
 - **Understanding dependencies**: `ctxctl deps <file>` classifies every import
-  as local / external / ignored — faster than mentally tracing `use` edges.
+  as local / external / ignored / unresolved — faster than mentally tracing
+  `use` edges.
 - **Compressing command output**: `ctxctl exec "<cmd>"` runs the command and
   prints only the signal: keep-lines (`error|warning|failed|panic|fatal` by
   default) plus a head/tail summary, with the exit code preserved.
@@ -56,10 +57,18 @@ Use CtxCtl commands when:
 | `ctxctl symbol <file> --name <sym> --signature`  | Signature line(s) only                                 |
 | `ctxctl symbol <file> --name <sym> --lines 3-10` | Sub-range within the symbol                            |
 | `ctxctl read <file> --lines 100-150,200-210`     | Raw 1-based line ranges (no AST)                       |
-| `ctxctl deps <file>`                             | Import graph: local / external / ignored               |
+| `ctxctl deps <file>`                             | Import graph: local / external / ignored / unresolved  |
 | `ctxctl exec "<cmd>"`                            | Compressed command output, exit code preserved         |
 | `--json` (global)                                | Machine contract; JSON envelope, byte-stable           |
 | `--no-saved` (global)                            | Suppress `saved%` metrics                              |
+
+`ctxctl mcp` exposes the same five commands as MCP tools
+(`ctxctl_outline`, `ctxctl_symbol`, `ctxctl_read`, `ctxctl_deps`,
+`ctxctl_exec`) — see [`references/commands.md`](references/commands.md).
+
+File guardrail: inputs must be regular files no larger than
+`[limits] max_file_bytes` (default 10 MiB); anything else is refused up
+front with a clear error.
 
 Config precedence: `--config <path>` > nearest `.ctxctl/config.toml` walk-up
 
@@ -93,6 +102,11 @@ Exit code passes through; stderr is merged. Outputs at or below
 `collapse_threshold` lines (default 20) pass through uncompressed. Prefer
 `--json` when the agent needs machine-readable fields (`compressed`,
 `exit_code`).
+
+`exec` runs a single command, not a shell: unquoted shell metacharacters
+(`|`, `>`, `;`, ...) are rejected up front with an error that names the fix —
+wrap compound commands explicitly, e.g.
+`ctxctl exec "sh -c 'make 2>&1 | tail -50'"`.
 
 ## Byte Stability (Prompt Caching)
 

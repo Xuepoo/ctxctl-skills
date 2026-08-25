@@ -29,6 +29,9 @@ show_doc = true
 [paths]
 ignore = ["node_modules", "target", "dist", ".git"]      # replaces defaults wholesale
 
+[limits]
+max_file_bytes = 10485760   # inputs above this are refused up front (10 MiB)
+
 [general]
 show_saved = true
 ```
@@ -38,9 +41,13 @@ show_saved = true
 - Arrays **replace** the previous level's array — never concatenated.
 - Partial sections are fine: declaring only `[exec] keep` keeps the default
   `head_lines`, `tail_lines`, and `collapse_threshold`.
-- Keep patterns are rg regexes, matched case-insensitively.
+- Keep patterns are rg regexes, matched case-insensitively. Empty or
+  whitespace-only keep patterns are rejected — they would match every line.
 - Ignore globs without `/` match any path segment; globs with `/` match the
   whole normalized path (`*` and `?` supported).
+- **Tolerance**: only an explicit `--config` is fatal on read/parse errors.
+  A broken config discovered during lookup (XDG global or project walk-up)
+  is skipped with one deterministic stderr warning and the command continues.
 
 ## Byte Stability
 
